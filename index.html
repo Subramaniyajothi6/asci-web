@@ -6,12 +6,29 @@
   <title>Geist — Design System Playground</title>
   <meta name="description" content="An animated showcase of Vercel's Geist design system: fonts, colors, components and motion." />
 
-  <!-- Geist fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap" rel="stylesheet" />
+  <!-- Geist fonts (self-hosted, official Vercel Geist typefaces) -->
+  <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
 
   <style>
+    /* ============================================================
+       GEIST TYPEFACES — self-hosted variable fonts
+    ============================================================ */
+    @font-face {
+      font-family: "Geist";
+      src: url("fonts/Geist-Variable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("fonts/GeistMono-Variable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
     /* ============================================================
        GEIST DESIGN TOKENS
     ============================================================ */
@@ -27,9 +44,9 @@
       --cyan:   #22d3ee;
 
       --radius: 4px;
-      --font-sans: "Pixelify Sans", ui-monospace, "Segoe UI", sans-serif;
-      --font-mono: "VT323", ui-monospace, monospace;
-      --font-display: "Press Start 2P", "Pixelify Sans", monospace;
+      --font-sans: "Geist", ui-sans-serif, "Segoe UI", system-ui, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+      --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -970,28 +987,28 @@
     <div class="wrap">
       <div class="reveal">
         <div class="eyebrow">01 — Typeface</div>
-        <h2 class="title">Pixel type stack</h2>
-        <p class="lead">Three fonts driving the retro look: Press Start 2P for display, Pixelify Sans for body, VT323 for code.</p>
+        <h2 class="title">Geist type stack</h2>
+        <p class="lead">Two typefaces driving the look: Geist Sans for display and body, Geist Mono for code. Vercel's official Geist family, self-hosted.</p>
       </div>
 
       <div class="grid cols-2" style="margin-top: 40px;">
         <div class="card reveal">
-          <div class="type-row"><span class="sample" style="font-family: var(--font-display); font-size: 26px;">GEIST</span><span class="meta">Press Start 2P</span></div>
-          <div class="type-row"><span class="sample" style="font-size: 26px; font-weight: 600;">The quick brown fox</span><span class="meta">Pixelify · 600</span></div>
-          <div class="type-row"><span class="sample" style="font-size: 18px; font-weight: 400; color: var(--fg-muted);">Readable at body sizes too.</span><span class="meta">Pixelify · 400</span></div>
+          <div class="type-row"><span class="sample" style="font-family: var(--font-display); font-size: 26px; font-weight: 700;">GEIST</span><span class="meta">Geist · Display</span></div>
+          <div class="type-row"><span class="sample" style="font-size: 26px; font-weight: 600;">The quick brown fox</span><span class="meta">Geist · 600</span></div>
+          <div class="type-row"><span class="sample" style="font-size: 18px; font-weight: 400; color: var(--fg-muted);">Readable at body sizes too.</span><span class="meta">Geist · 400</span></div>
           <div class="weights">
             <span style="font-weight:400;">Aa</span><span style="font-weight:500;">Aa</span><span style="font-weight:600;">Aa</span><span style="font-weight:700;">Aa</span>
-            <span style="font-family: var(--font-display); font-size: 20px; align-self: center; margin-left: 8px;">A</span>
+            <span style="font-family: var(--font-display); font-size: 20px; align-self: center; margin-left: 8px; font-weight: 700;">A</span>
           </div>
         </div>
         <div class="card reveal">
-          <div class="type-row"><span class="sample" style="font-family: var(--font-mono); font-size: 44px;">VT323</span><span class="meta">Mono</span></div>
+          <div class="type-row"><span class="sample" style="font-family: var(--font-mono); font-size: 44px;">Geist Mono</span><span class="meta">Mono</span></div>
           <div class="code" style="margin-top: 8px;">
-<span class="k">const</span> <span class="f">pixel</span> = {<br />
-&nbsp;&nbsp;display: <span class="s">"Press Start 2P"</span>,<br />
-&nbsp;&nbsp;body: <span class="s">"Pixelify Sans"</span>,<br />
-&nbsp;&nbsp;mono: <span class="s">"VT323"</span>,<br />
-&nbsp;&nbsp;<span class="c">// 8-bit and proud</span><br />
+<span class="k">const</span> <span class="f">geist</span> = {<br />
+&nbsp;&nbsp;display: <span class="s">"Geist"</span>,<br />
+&nbsp;&nbsp;body: <span class="s">"Geist"</span>,<br />
+&nbsp;&nbsp;mono: <span class="s">"Geist Mono"</span>,<br />
+&nbsp;&nbsp;<span class="c">// by Vercel, self-hosted</span><br />
 };
           </div>
         </div>
@@ -1034,9 +1051,8 @@
           <div class="tl-row"><label>Weight</label><input type="range" id="fpWeight" min="400" max="700" step="100" value="600" /><span class="val" id="fpWeightV">600</span></div>
           <div class="tl-row"><label>Spacing</label><input type="range" id="fpSpace" min="-4" max="16" value="0" /><span class="val" id="fpSpaceV">0</span></div>
           <div class="shape-btns" id="fpFamily">
-            <button class="shape-btn active" data-f='"Pixelify Sans", sans-serif' data-w="1">Pixelify</button>
-            <button class="shape-btn" data-f='"Press Start 2P", monospace' data-w="0">Press Start</button>
-            <button class="shape-btn" data-f='"VT323", monospace' data-w="0">VT323</button>
+            <button class="shape-btn active" data-f='"Geist", sans-serif' data-w="1">Geist Sans</button>
+            <button class="shape-btn" data-f='"Geist Mono", monospace' data-w="1">Geist Mono</button>
           </div>
           <div class="tl-css" id="fpCss"></div>
         </div>
@@ -2191,9 +2207,9 @@ GGGGGGGG`;
         body.forEach((b, i) => { ctx.fillStyle = i === 0 ? '#7dffa0' : '#45a557'; ctx.fillRect(b.x * S + 1, b.y * S + 1, S - 2, S - 2); });
         if (!running || dead) {
           ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(0, 0, cv.width, cv.height);
-          ctx.fillStyle = '#fff'; ctx.font = '14px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+          ctx.fillStyle = '#fff'; ctx.font = '14px "Geist", sans-serif'; ctx.textAlign = 'center';
           ctx.fillText(dead ? 'GAME OVER' : 'CLICK', cv.width / 2, cv.height / 2 - 8);
-          ctx.font = '9px "Press Start 2P", monospace'; ctx.fillStyle = '#a1a1a1';
+          ctx.font = '9px "Geist", sans-serif'; ctx.fillStyle = '#a1a1a1';
           ctx.fillText(dead ? 'click to retry' : 'to start', cv.width / 2, cv.height / 2 + 16);
         }
       }
@@ -2360,10 +2376,10 @@ GGGGGGGG`;
         cv.width = cv.clientWidth; cv.height = cv.clientHeight;
         const text = (input.value || ' ').toUpperCase();
         const rows = 12;
-        octx.font = '700 ' + rows + 'px sans-serif';
+        octx.font = '700 ' + rows + 'px "Geist", sans-serif';
         const cols = Math.max(1, Math.ceil(octx.measureText(text).width));
         off.width = cols; off.height = rows;
-        octx.font = '700 ' + rows + 'px sans-serif';
+        octx.font = '700 ' + rows + 'px "Geist", sans-serif';
         octx.textBaseline = 'middle'; octx.fillStyle = '#fff';
         octx.clearRect(0, 0, cols, rows);
         octx.fillText(text, 0, rows * 0.54);
@@ -2409,7 +2425,7 @@ GGGGGGGG`;
       const sV = document.getElementById('fpSizeV'), wV = document.getElementById('fpWeightV'), spV = document.getElementById('fpSpaceV');
       const css = document.getElementById('fpCss');
       const famBtns = [...document.querySelectorAll('#fpFamily .shape-btn')];
-      let family = '"Pixelify Sans", sans-serif', useWeight = true;
+      let family = '"Geist", sans-serif', useWeight = true;
       function upd() {
         prev.style.fontFamily = family;
         prev.style.fontSize = size.value + 'px';
@@ -2442,7 +2458,7 @@ GGGGGGGG`;
         const muted = 'rgba(0,112,243,0.55)';
         ctx.clearRect(0, 0, W, H);
         const px = H * 0.6, baseY = H * 0.72;
-        ctx.font = '700 ' + px + 'px sans-serif';
+        ctx.font = '700 ' + px + 'px "Geist", sans-serif';
         ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
         const m = ctx.measureText(ch);
         const xh = ctx.measureText('x').actualBoundingBoxAscent;
@@ -2452,7 +2468,7 @@ GGGGGGGG`;
         function line(y, label) {
           ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
           ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.setLineDash([]);
-          ctx.fillStyle = muted; ctx.font = '13px "VT323", monospace'; ctx.textAlign = 'left';
+          ctx.fillStyle = muted; ctx.font = '13px "Geist Mono", monospace'; ctx.textAlign = 'left';
           ctx.fillText(label, 8, y - 5);
         }
         line(baseY, 'baseline');
@@ -2461,7 +2477,7 @@ GGGGGGGG`;
         line(baseY - asc, 'ascender');
         if (desc > 2) line(baseY + desc, 'descender');
         // glyph
-        ctx.fillStyle = fg; ctx.font = '700 ' + px + 'px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillStyle = fg; ctx.font = '700 ' + px + 'px "Geist", sans-serif'; ctx.textAlign = 'center';
         ctx.fillText(ch, W / 2, baseY);
       }
       btns.forEach(b => b.addEventListener('click', () => {
@@ -2675,9 +2691,9 @@ GGGGGGGG`;
         ctx.fillStyle = '#7dffa0'; ctx.fillRect(ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2);
         if (!running) {
           ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0, 0, W, H);
-          ctx.fillStyle = '#fff'; ctx.font = '13px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+          ctx.fillStyle = '#fff'; ctx.font = '13px "Geist", sans-serif'; ctx.textAlign = 'center';
           ctx.fillText(over ? (won ? 'YOU WIN' : 'GAME OVER') : 'CLICK', W / 2, H / 2 - 6);
-          ctx.font = '9px "Press Start 2P", monospace'; ctx.fillStyle = '#a1a1a1';
+          ctx.font = '9px "Geist", sans-serif'; ctx.fillStyle = '#a1a1a1';
           ctx.fillText('to launch', W / 2, H / 2 + 16);
         }
       }

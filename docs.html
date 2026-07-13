@@ -5,16 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learn — Geist Playground Docs</title>
   <meta name="description" content="An easy, learnable docs site: how the effects work, how Vercel works, and the Geist design system." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <style>
+    /* Geist typefaces — self-hosted variable fonts */
+    @font-face {
+      font-family:"Geist";
+      src:url("fonts/Geist-Variable.woff2") format("woff2");
+      font-weight:100 900; font-style:normal; font-display:swap;
+    }
+    @font-face {
+      font-family:"Geist Mono";
+      src:url("fonts/GeistMono-Variable.woff2") format("woff2");
+      font-weight:100 900; font-style:normal; font-display:swap;
+    }
     :root {
       --blue:#0070f3; --purple:#8a63d2; --pink:#ff0080; --red:#e5484d; --amber:#f5a623; --green:#45a557; --teal:#14b8a6; --cyan:#22d3ee;
       --radius:6px;
-      --font-sans:"Pixelify Sans", ui-monospace, sans-serif;
-      --font-mono:"VT323", ui-monospace, monospace;
-      --font-display:"Press Start 2P", monospace;
+      --font-sans:"Geist", ui-sans-serif, system-ui, sans-serif;
+      --font-mono:"Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+      --font-display:"Geist", ui-sans-serif, system-ui, sans-serif;
       --ease:cubic-bezier(0.22,1,0.36,1);
     }
     :root[data-theme="dark"]{ --bg:#000; --bg-soft:#0a0a0a; --panel:#0e0e0e; --panel-2:#141414; --border:#1f1f1f; --border-2:#2a2a2a; --fg:#ededed; --fg-muted:#a1a1a1; --fg-faint:#6b6b6b; }
@@ -870,7 +880,7 @@ button { background: <span class="k">var</span>(<span class="f">--blue</span>); 
 
     // font playground
     (function(){const prev=document.getElementById('fontSample'),sz=document.getElementById('fSize'),wt=document.getElementById('fWeight'),szv=document.getElementById('fSizeV'),wtv=document.getElementById('fWeightV');
-      function u(){prev.style.fontFamily='"Pixelify Sans",sans-serif';prev.style.fontSize=sz.value+'px';prev.style.fontWeight=wt.value;szv.textContent=sz.value;wtv.textContent=wt.value;}
+      function u(){prev.style.fontFamily='"Geist",sans-serif';prev.style.fontSize=sz.value+'px';prev.style.fontWeight=wt.value;szv.textContent=sz.value;wtv.textContent=wt.value;}
       [sz,wt].forEach(x=>x.addEventListener('input',u));u();})();
 
     // swatches
