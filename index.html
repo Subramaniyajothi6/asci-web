@@ -616,8 +616,9 @@
 
     /* segmented tabs */
     .tabs { display: inline-flex; padding: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; position: relative; gap: 2px; }
-    .tab { position: relative; z-index: 2; padding: 8px 18px; font-size: 14px; color: var(--fg-muted); cursor: pointer; border-radius: 7px; transition: color 0.2s; }
-    .tab.active { color: var(--fg); }
+    .tab { position: relative; z-index: 2; padding: 8px 18px; font-size: 14px; color: var(--fg); opacity: 0.8; cursor: pointer; border-radius: 7px; transition: opacity 0.2s, color 0.2s; }
+    .tab:hover { opacity: 0.95; }
+    .tab.active { color: var(--fg); opacity: 1; }
     .tab-ind { position: absolute; z-index: 1; top: 4px; height: calc(100% - 8px); background: var(--panel); border: 1px solid var(--border); border-radius: 7px; transition: left 0.3s var(--ease), width 0.3s var(--ease); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
     .tab-panel { margin-top: 20px; color: var(--fg-muted); font-size: 15px; }
     .tab-panel > div { display: none; animation: fade 0.4s var(--ease); }
@@ -2510,49 +2511,60 @@ GGGGGGGG`;
       const cv = document.getElementById('glyphCanvas');
       const ctx = cv.getContext('2d');
       const btns = [...document.querySelectorAll('#glyphChars .shape-btn')];
+      const off = document.createElement('canvas');
+      const octx = off.getContext('2d', { willReadFrequently: true });
       let ch = 'A';
       function draw() {
         cv.width = cv.clientWidth; cv.height = cv.clientHeight;
         const W = cv.width, H = cv.height;
         const css = getComputedStyle(document.documentElement);
         const fg = css.getPropertyValue('--fg').trim() || '#ededed';
-        const muted = 'rgba(0,112,243,0.55)';
+        const muted = 'rgba(0,112,243,0.6)';
         ctx.clearRect(0, 0, W, H);
-        const px = H * 0.6, baseY = H * 0.72;
+        const px = Math.round(H * 0.48), baseY = Math.round(H * 0.66);
         const FAM = '"Geist Pixel Square", monospace';
-        ctx.font = px + 'px ' + FAM;
-        ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
-        // font metrics from reference glyphs — stable, independent of the shown glyph
-        const xh  = ctx.measureText('x').actualBoundingBoxAscent;
-        const cap = ctx.measureText('H').actualBoundingBoxAscent;
-        const asc = ctx.measureText('h').actualBoundingBoxAscent;
-        const desc = ctx.measureText('g').actualBoundingBoxDescent;
-        // glyph first, so the guides sit on top of it
+
+        // Measure the EXACT ink rows of reference glyphs by scanning pixels of an
+        // identical offscreen render, so every guide lands on the drawn pixels.
+        off.width = W; off.height = H;
+        octx.font = px + 'px ' + FAM; octx.textAlign = 'center'; octx.textBaseline = 'alphabetic';
+        function scan(c, fromBottom) {
+          octx.clearRect(0, 0, W, H);
+          octx.fillStyle = '#fff'; octx.fillText(c, W / 2, baseY);
+          const d = octx.getImageData(0, 0, W, H).data;
+          if (fromBottom) { for (let y = H - 1; y >= 0; y--) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 60) return y; }
+          else { for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] > 60) return y; }
+          return baseY;
+        }
+        const capY = scan('H', false);
+        const xY   = scan('x', false);
+        const descY = scan('g', true);
+
+        // draw the selected glyph (guides go on top)
+        ctx.font = px + 'px ' + FAM; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
         ctx.fillStyle = fg; ctx.fillText(ch, W / 2, baseY);
-        // guide metrics, each with a priority so near-coincident lines collapse
-        // (in a pixel face cap-height and ascender are nearly identical)
+
+        // guides derived from the scan, priority-merged if within 14px
         let guides = [
-          { y: baseY,       label: 'baseline',   pr: 1 },
-          { y: baseY - cap, label: 'cap-height', pr: 2 },
-          { y: baseY - xh,  label: 'x-height',   pr: 3 },
-          { y: baseY - asc, label: 'ascender',   pr: 5 },
+          { y: capY,  label: 'cap-height', pr: 2 },
+          { y: xY,    label: 'x-height',   pr: 3 },
+          { y: baseY, label: 'baseline',   pr: 1 },
         ];
-        if (desc > 2) guides.push({ y: baseY + desc, label: 'descender', pr: 4 });
+        if (descY > baseY + 2) guides.push({ y: descY, label: 'descender', pr: 4 });
         guides.sort((a, b) => a.y - b.y);
-        // merge lines within 14px, keeping the higher-priority (lower pr) label
         const kept = [];
         for (const g of guides) {
           const near = kept.find(k => Math.abs(k.y - g.y) < 14);
           if (near) { if (g.pr < near.pr) { near.label = g.label; near.pr = g.pr; near.y = g.y; } }
           else kept.push({ ...g });
         }
-        // dashed guide lines
+        // dashed guide lines (+0.5 for a crisp 1px line)
         ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
-        kept.forEach(g => { ctx.beginPath(); ctx.moveTo(0, g.y); ctx.lineTo(W, g.y); ctx.stroke(); });
+        kept.forEach(g => { ctx.beginPath(); ctx.moveTo(0, g.y + 0.5); ctx.lineTo(W, g.y + 0.5); ctx.stroke(); });
         ctx.setLineDash([]);
         // labels sit just above their line; kept lines are already >= 14px apart
         ctx.fillStyle = muted; ctx.font = '12px ui-monospace, "Geist Mono", monospace'; ctx.textAlign = 'left';
-        kept.forEach(g => ctx.fillText(g.label, 10, g.y - 4));
+        kept.forEach(g => ctx.fillText(g.label, 10, g.y - 5));
       }
       btns.forEach(b => b.addEventListener('click', () => {
         btns.forEach(x => x.classList.remove('active')); b.classList.add('active');
