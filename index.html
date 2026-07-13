@@ -29,6 +29,13 @@
       font-display: swap;
     }
 
+    /* Geist Pixel — official display typeface, one file per shape variant */
+    @font-face { font-family: "Geist Pixel Square";   src: url("fonts/pixel/GeistPixel-Square.woff2")   format("woff2"); font-display: swap; }
+    @font-face { font-family: "Geist Pixel Circle";   src: url("fonts/pixel/GeistPixel-Circle.woff2")   format("woff2"); font-display: swap; }
+    @font-face { font-family: "Geist Pixel Grid";     src: url("fonts/pixel/GeistPixel-Grid.woff2")     format("woff2"); font-display: swap; }
+    @font-face { font-family: "Geist Pixel Triangle"; src: url("fonts/pixel/GeistPixel-Triangle.woff2") format("woff2"); font-display: swap; }
+    @font-face { font-family: "Geist Pixel Line";     src: url("fonts/pixel/GeistPixel-Line.woff2")     format("woff2"); font-display: swap; }
+
     /* ============================================================
        GEIST DESIGN TOKENS
     ============================================================ */
@@ -512,6 +519,12 @@
     .tl-card .sub { color: var(--fg-faint); font-family: var(--font-mono); font-size: 15px; margin-bottom: 16px; }
     .tl-canvas, .glyph-canvas { width: 100%; background: #05060c; border: 1px solid var(--border); border-radius: 6px; display: block; }
     .tl-canvas { height: 140px; }
+    /* Geist Pixel live stage */
+    .px-stage { margin-top: 16px; min-height: 190px; display: flex; align-items: center; justify-content: center; padding: 24px; overflow: hidden;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: radial-gradient(120% 120% at 50% 35%, rgba(0,112,243,0.10), rgba(138,99,210,0.05) 45%, transparent 72%), #05060c; }
+    .px-text { font-family: "Geist Pixel Square", monospace; font-size: clamp(40px, 11vw, 104px); line-height: 1; letter-spacing: 3px; white-space: nowrap;
+      background: linear-gradient(90deg, #0070f3, #8a63d2, #ff0080); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .glyph-canvas { height: 240px; background: var(--bg-soft); }
     .shape-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
     .shape-btn { padding: 7px 12px; font-size: 13px; font-family: var(--font-mono); border: 1px solid var(--border-2); background: var(--panel-2); color: var(--fg-muted); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
@@ -1022,24 +1035,21 @@
       <div class="reveal">
         <div class="eyebrow">01b — Type Lab</div>
         <h2 class="title">Geist type lab</h2>
-        <p class="lead">Inspired by vercel.com/font — a live pixel-shape renderer (à la <strong style="color:var(--fg)">Geist Pixel</strong>'s Square/Circle/Grid/Triangle/Line variants), a weight &amp; spacing playground, and a glyph metrics inspector.</p>
+        <p class="lead">Just like <a href="https://vercel.com/font?type=pixel" target="_blank" rel="noopener" style="color:var(--blue)">vercel.com/font</a> — rendered in the <strong style="color:var(--fg)">real Geist Pixel</strong> typeface, with its five shape variants (Square / Circle / Grid / Triangle / Line), plus a weight &amp; spacing playground and a glyph metrics inspector.</p>
       </div>
 
       <div class="tl-card wide reveal" style="margin-top: 40px;">
         <h3>Geist Pixel renderer</h3>
-        <div class="sub">type below · pick a shape variant — each letter is rendered as a grid of that shape</div>
-        <canvas class="tl-canvas" id="pxCanvas"></canvas>
+        <div class="sub">type below · pick a shape variant — each glyph is drawn by the Geist Pixel font itself</div>
+        <div class="px-stage"><span class="px-text" id="pxText">GEIST</span></div>
         <div class="shape-btns" id="pxShapes">
-          <button class="shape-btn active" data-shape="square">■ Square</button>
-          <button class="shape-btn" data-shape="circle">● Circle</button>
-          <button class="shape-btn" data-shape="grid">▦ Grid</button>
-          <button class="shape-btn" data-shape="triangle">▲ Triangle</button>
-          <button class="shape-btn" data-shape="line">▬ Line</button>
-          <button class="shape-btn" data-shape="diamond">◆ Diamond</button>
-          <button class="shape-btn" data-shape="ring">◎ Ring</button>
-          <button class="shape-btn" data-shape="cross">✚ Cross</button>
+          <button class="shape-btn active" data-shape="Square">■ Square</button>
+          <button class="shape-btn" data-shape="Circle">● Circle</button>
+          <button class="shape-btn" data-shape="Grid">▦ Grid</button>
+          <button class="shape-btn" data-shape="Triangle">▲ Triangle</button>
+          <button class="shape-btn" data-shape="Line">▬ Line</button>
         </div>
-        <input class="input" id="pxText" value="GEIST" maxlength="14" style="margin-top:14px;" />
+        <input class="input" id="pxInput" value="GEIST" maxlength="14" style="margin-top:14px;" />
       </div>
 
       <div class="tl-grid">
@@ -2361,59 +2371,23 @@ GGGGGGGG`;
     })();
 
     /* ============================================================
-       GEIST PIXEL RENDERER — type → grid of shapes
+       GEIST PIXEL RENDERER — real Geist Pixel typeface, shape variants
     ============================================================ */
     (function pixelRenderer() {
-      const cv = document.getElementById('pxCanvas');
-      const ctx = cv.getContext('2d', { willReadFrequently: true });
-      const input = document.getElementById('pxText');
+      const preview = document.getElementById('pxText');
+      const input = document.getElementById('pxInput');
       const shapeBtns = [...document.querySelectorAll('#pxShapes .shape-btn')];
-      const off = document.createElement('canvas');
-      const octx = off.getContext('2d', { willReadFrequently: true });
-      let shape = 'square';
-
+      let shape = 'Square';
       function draw() {
-        cv.width = cv.clientWidth; cv.height = cv.clientHeight;
-        const text = (input.value || ' ').toUpperCase();
-        const rows = 12;
-        octx.font = '700 ' + rows + 'px "Geist", sans-serif';
-        const cols = Math.max(1, Math.ceil(octx.measureText(text).width));
-        off.width = cols; off.height = rows;
-        octx.font = '700 ' + rows + 'px "Geist", sans-serif';
-        octx.textBaseline = 'middle'; octx.fillStyle = '#fff';
-        octx.clearRect(0, 0, cols, rows);
-        octx.fillText(text, 0, rows * 0.54);
-        const d = octx.getImageData(0, 0, cols, rows).data;
-
-        ctx.clearRect(0, 0, cv.width, cv.height);
-        const pad = 16;
-        const cell = Math.min((cv.width - pad * 2) / cols, (cv.height - pad * 2) / rows);
-        const ox = (cv.width - cell * cols) / 2, oy = (cv.height - cell * rows) / 2;
-        const grad = ctx.createLinearGradient(0, 0, cv.width, 0);
-        grad.addColorStop(0, '#0070f3'); grad.addColorStop(0.5, '#8a63d2'); grad.addColorStop(1, '#ff0080');
-        ctx.fillStyle = grad; ctx.strokeStyle = grad; ctx.lineWidth = Math.max(1, cell * 0.16);
-        for (let y = 0; y < rows; y++) {
-          for (let x = 0; x < cols; x++) {
-            if (d[(y * cols + x) * 4 + 3] < 128) continue;
-            const cxp = ox + x * cell, cyp = oy + y * cell, s = cell * 0.82, m = cell * 0.09;
-            if (shape === 'square') ctx.fillRect(cxp + m, cyp + m, s, s);
-            else if (shape === 'circle') { ctx.beginPath(); ctx.arc(cxp + cell / 2, cyp + cell / 2, s / 2, 0, 6.283); ctx.fill(); }
-            else if (shape === 'grid') { ctx.strokeRect(cxp + m + ctx.lineWidth / 2, cyp + m + ctx.lineWidth / 2, s - ctx.lineWidth, s - ctx.lineWidth); }
-            else if (shape === 'triangle') { ctx.beginPath(); ctx.moveTo(cxp + cell / 2, cyp + m); ctx.lineTo(cxp + cell - m, cyp + cell - m); ctx.lineTo(cxp + m, cyp + cell - m); ctx.closePath(); ctx.fill(); }
-            else if (shape === 'line') { ctx.beginPath(); ctx.moveTo(cxp + m, cyp + cell / 2); ctx.lineTo(cxp + cell - m, cyp + cell / 2); ctx.stroke(); }
-            else if (shape === 'diamond') { ctx.beginPath(); ctx.moveTo(cxp + cell / 2, cyp + m); ctx.lineTo(cxp + cell - m, cyp + cell / 2); ctx.lineTo(cxp + cell / 2, cyp + cell - m); ctx.lineTo(cxp + m, cyp + cell / 2); ctx.closePath(); ctx.fill(); }
-            else if (shape === 'ring') { ctx.beginPath(); ctx.arc(cxp + cell / 2, cyp + cell / 2, s / 2, 0, 6.283); ctx.stroke(); }
-            else if (shape === 'cross') { const tk = cell * 0.3; ctx.fillRect(cxp + cell / 2 - tk / 2, cyp + m, tk, s); ctx.fillRect(cxp + m, cyp + cell / 2 - tk / 2, s, tk); }
-          }
-        }
+        preview.textContent = input.value || 'GEIST';
+        preview.style.fontFamily = '"Geist Pixel ' + shape + '", monospace';
       }
       shapeBtns.forEach(b => b.addEventListener('click', () => {
         shapeBtns.forEach(x => x.classList.remove('active')); b.classList.add('active');
         shape = b.dataset.shape; draw();
       }));
       input.addEventListener('input', draw);
-      window.addEventListener('resize', debounce(draw, 150));
-      setTimeout(draw, 300);
+      draw();
     })();
 
     /* ============================================================
