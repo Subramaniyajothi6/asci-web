@@ -399,6 +399,7 @@
       margin: 0; padding: 12px 14px; height: 300px; overflow: hidden;
       font-family: var(--font-mono); font-size: 13px; line-height: 1.0; letter-spacing: 0;
       white-space: pre; text-align: left; user-select: none;
+      text-rendering: geometricPrecision; font-feature-settings: normal; font-variant-ligatures: none;
     }
     /* per-effect skins */
     .scr-donut  { background: #05050c; }
@@ -454,7 +455,8 @@
     .conv-drop:hover, .conv-drop.drag { border-color: var(--blue); background: rgba(0,112,243,0.06); }
     .conv-label { font-size: 13px; color: var(--fg-muted); margin: 16px 0 8px; display: block; }
     .conv-out { background: #05060c; border: 1px solid var(--border); border-radius: 6px; overflow: auto; display: grid; place-items: center; min-height: 320px; padding: 10px; }
-    pre.conv-ascii { margin: 0; font-family: var(--font-mono); font-size: 8px; line-height: 0.82; letter-spacing: 0; white-space: pre; color: #d8e6ff; }
+    pre.conv-ascii { margin: 0; font-family: var(--font-mono); font-size: 9px; line-height: 0.82; letter-spacing: 0; white-space: pre; color: #d8e6ff;
+      text-rendering: geometricPrecision; font-feature-settings: normal; font-variant-ligatures: none; }
     .conv-out canvas { image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; }
     input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; background: var(--panel-2); outline: none; border: 1px solid var(--border); }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 2px solid var(--bg); }
@@ -2527,25 +2529,30 @@ GGGGGGGG`;
         const desc = ctx.measureText('g').actualBoundingBoxDescent;
         // glyph first, so the guides sit on top of it
         ctx.fillStyle = fg; ctx.fillText(ch, W / 2, baseY);
-        // guide metrics
-        const guides = [
-          { y: baseY,       label: 'baseline' },
-          { y: baseY - xh,  label: 'x-height' },
-          { y: baseY - cap, label: 'cap-height' },
-          { y: baseY - asc, label: 'ascender' },
+        // guide metrics, each with a priority so near-coincident lines collapse
+        // (in a pixel face cap-height and ascender are nearly identical)
+        let guides = [
+          { y: baseY,       label: 'baseline',   pr: 1 },
+          { y: baseY - cap, label: 'cap-height', pr: 2 },
+          { y: baseY - xh,  label: 'x-height',   pr: 3 },
+          { y: baseY - asc, label: 'ascender',   pr: 5 },
         ];
-        if (desc > 2) guides.push({ y: baseY + desc, label: 'descender' });
-        // dashed guide lines at their true positions
-        ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
-        guides.forEach(g => { ctx.beginPath(); ctx.moveTo(0, g.y); ctx.lineTo(W, g.y); ctx.stroke(); });
-        ctx.setLineDash([]);
-        // labels, nudged apart so near-coincident lines never overlap
-        ctx.fillStyle = muted; ctx.font = '12px ui-monospace, "Geist Mono", monospace'; ctx.textAlign = 'left';
-        const rows = guides.map(g => ({ label: g.label, ty: g.y - 4 })).sort((a, b) => a.ty - b.ty);
-        for (let i = 1; i < rows.length; i++) {
-          if (rows[i].ty - rows[i - 1].ty < 15) rows[i].ty = rows[i - 1].ty + 15;
+        if (desc > 2) guides.push({ y: baseY + desc, label: 'descender', pr: 4 });
+        guides.sort((a, b) => a.y - b.y);
+        // merge lines within 14px, keeping the higher-priority (lower pr) label
+        const kept = [];
+        for (const g of guides) {
+          const near = kept.find(k => Math.abs(k.y - g.y) < 14);
+          if (near) { if (g.pr < near.pr) { near.label = g.label; near.pr = g.pr; near.y = g.y; } }
+          else kept.push({ ...g });
         }
-        rows.forEach(r => ctx.fillText(r.label, 8, r.ty));
+        // dashed guide lines
+        ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
+        kept.forEach(g => { ctx.beginPath(); ctx.moveTo(0, g.y); ctx.lineTo(W, g.y); ctx.stroke(); });
+        ctx.setLineDash([]);
+        // labels sit just above their line; kept lines are already >= 14px apart
+        ctx.fillStyle = muted; ctx.font = '12px ui-monospace, "Geist Mono", monospace'; ctx.textAlign = 'left';
+        kept.forEach(g => ctx.fillText(g.label, 10, g.y - 4));
       }
       btns.forEach(b => b.addEventListener('click', () => {
         btns.forEach(x => x.classList.remove('active')); b.classList.add('active');
