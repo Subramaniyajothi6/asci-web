@@ -9,6 +9,7 @@
   <!-- Geist fonts (self-hosted, official Vercel Geist typefaces) -->
   <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/pixel/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin />
 
   <style>
     /* ============================================================
@@ -53,7 +54,8 @@
       --radius: 4px;
       --font-sans: "Geist", ui-sans-serif, "Segoe UI", system-ui, sans-serif;
       --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
-      --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+      --font-display: "Geist Pixel Square", "Geist", ui-sans-serif, sans-serif;
+      --font-pixel: "Geist Pixel Square", "Geist", sans-serif;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -119,8 +121,8 @@
     section { position: relative; padding: 100px 0; }
     .eyebrow {
       font-family: var(--font-display);
-      font-size: 10px;
-      letter-spacing: 0.06em;
+      font-size: 12px;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--blue);
       margin-bottom: 18px;
@@ -198,13 +200,19 @@
     /* ============================================================
        HERO
     ============================================================ */
-    .hero { padding: 120px 0 90px; text-align: center; overflow: hidden; }
+    .hero { position: relative; padding: 120px 0 90px; text-align: center; overflow: hidden; }
     .hero-grid {
       position: absolute; inset: 0; z-index: 0;
       background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
       background-size: 44px 44px;
       -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
               mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+    }
+    .hero-field {
+      position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%;
+      pointer-events: none;
+      -webkit-mask-image: radial-gradient(ellipse 78% 74% at 50% 44%, #000 60%, transparent 100%);
+              mask-image: radial-gradient(ellipse 78% 74% at 50% 44%, #000 60%, transparent 100%);
     }
     .hero-glow {
       position: absolute; z-index: 0; top: -140px; left: 50%; transform: translateX(-50%);
@@ -715,7 +723,7 @@
   <div class="content">
   <!-- HERO -->
   <header class="hero" id="top">
-    <div class="hero-grid"></div>
+    <canvas class="hero-field" id="heroField" aria-hidden="true"></canvas>
     <div class="hero-glow"></div>
     <div class="wrap" style="position: relative; z-index: 3;">
       <div class="pill"><span class="dot"></span> Testing everything Geist shipped</div>
@@ -1063,6 +1071,7 @@
           <div class="shape-btns" id="fpFamily">
             <button class="shape-btn active" data-f='"Geist", sans-serif' data-w="1">Geist Sans</button>
             <button class="shape-btn" data-f='"Geist Mono", monospace' data-w="1">Geist Mono</button>
+            <button class="shape-btn" data-f='"Geist Pixel Square", monospace' data-w="0">Geist Pixel</button>
           </div>
           <div class="tl-css" id="fpCss"></div>
         </div>
@@ -2725,6 +2734,81 @@ oRRRRo..
     pixelSprite('sp-skull', [SKULL], 9, 0);
     pixelSprite('sp-star', [STAR_BIG, STAR_SMALL], 9, 450);
     pixelSprite('sp-cherry', [CHERRY], 10, 0);
+
+    /* ============================================================
+       HERO PIXEL FIELD — animated field of faint scattered glyphs
+    ============================================================ */
+    (function heroField() {
+      const cv = document.getElementById('heroField');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      const hero = cv.parentElement;
+      const CHARS = ['1','0','+','-',':','*','·','/','×','.',';','■','●','▲','◆','□','○'];
+      const CELL = 26;
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let cols = 0, rows = 0, cells = [], dpr = 1, t = 0, last = 0;
+
+      function build() {
+        const r = hero.getBoundingClientRect();
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = Math.max(1, r.width * dpr);
+        cv.height = Math.max(1, r.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cols = Math.ceil(r.width / CELL) + 1;
+        rows = Math.ceil(r.height / CELL) + 1;
+        cells = [];
+        for (let i = 0; i < cols * rows; i++) {
+          cells.push({
+            ch: CHARS[Math.random() * CHARS.length | 0],
+            base: 0.03 + Math.random() * 0.11,
+            ph: Math.random() * 6.283,
+            flip: (Math.random() * 260 + 90) | 0
+          });
+        }
+      }
+
+      function render() {
+        const W = cv.width / dpr, H = cv.height / dpr;
+        ctx.clearRect(0, 0, W, H);
+        ctx.font = '14px "Geist Mono", ui-monospace, monospace';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const c = cells[y * cols + x];
+            if (!reduce && t % c.flip === 0) c.ch = CHARS[Math.random() * CHARS.length | 0];
+            const tw = reduce ? 1 : 0.55 + 0.45 * Math.sin(t * 0.03 + c.ph);
+            const wv = reduce ? 1 : 0.45 + 0.55 * Math.sin((x / cols) * 6.283 - t * 0.025);
+            let a = c.base * tw * (0.4 + wv);
+            if (a < 0) a = 0;
+            ctx.fillStyle = 'rgba(184,194,208,' + a.toFixed(3) + ')';
+            ctx.fillText(c.ch, x * CELL + CELL / 2, y * CELL + CELL / 2);
+          }
+        }
+      }
+
+      function loop(ts) {
+        if (ts - last >= 55) { last = ts; t++; render(); }  // ~18fps: a slow, subtle shimmer
+        requestAnimationFrame(loop);
+      }
+
+      build(); render();
+      if (!reduce) requestAnimationFrame(loop);
+      window.addEventListener('resize', debounce(() => { build(); render(); }, 200));
+    })();
+
+    /* ============================================================
+       HERO TITLE — cycle the word through the 5 Geist Pixel shapes
+    ============================================================ */
+    (function heroShapeCycle() {
+      const h1 = document.querySelector('.hero h1');
+      if (!h1 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const shapes = ['Square', 'Circle', 'Grid', 'Triangle', 'Line'];
+      let i = 0;
+      setInterval(() => {
+        i = (i + 1) % shapes.length;
+        h1.style.fontFamily = '"Geist Pixel ' + shapes[i] + '", "Geist", sans-serif';
+      }, 1500);
+    })();
   </script>
 </body>
 </html>
