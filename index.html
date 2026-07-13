@@ -533,6 +533,21 @@
       background: radial-gradient(120% 120% at 50% 35%, rgba(0,112,243,0.10), rgba(138,99,210,0.05) 45%, transparent 72%), #05060c; }
     .px-text { font-family: "Geist Pixel Square", monospace; font-size: clamp(40px, 11vw, 104px); line-height: 1; letter-spacing: 3px; white-space: nowrap;
       background: linear-gradient(90deg, #0070f3, #8a63d2, #ff0080); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    /* Stylistic-set explorer */
+    .ssx-preview { margin-top: 16px; min-height: 120px; display: flex; align-items: center; justify-content: center; padding: 22px 18px; overflow: hidden;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: radial-gradient(120% 120% at 50% 40%, rgba(0,112,243,0.08), transparent 70%), #05060c; }
+    #ssxPreview { font-family: "Geist Pixel Square", monospace; font-size: clamp(28px, 5.5vw, 56px); line-height: 1.1; letter-spacing: 2px; color: var(--fg); white-space: nowrap; }
+    .ssx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; margin-top: 16px; }
+    .ssx-chip { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border-2); border-radius: 8px; background: var(--panel-2); cursor: pointer; text-align: left; transition: border-color 0.2s, background 0.2s; }
+    .ssx-chip:hover { border-color: var(--fg-faint); }
+    .ssx-chip.on { border-color: var(--blue); background: rgba(0,112,243,0.12); }
+    .ssx-chip .demo { display: flex; align-items: center; gap: 6px; min-width: 62px; font-family: "Geist Pixel Square", monospace; font-size: 26px; line-height: 1; color: var(--fg); }
+    .ssx-chip .demo .arw { font-family: var(--font-mono); font-size: 15px; color: var(--fg-faint); }
+    .ssx-chip .demo .alt { color: var(--blue); }
+    .ssx-chip .meta { display: flex; flex-direction: column; gap: 2px; }
+    .ssx-chip .meta .tag { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
+    .ssx-chip .meta .nm { font-family: var(--font-mono); font-size: 13px; color: var(--fg); }
     .glyph-canvas { height: 240px; background: var(--bg-soft); }
     .shape-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
     .shape-btn { padding: 7px 12px; font-size: 13px; font-family: var(--font-mono); border: 1px solid var(--border-2); background: var(--panel-2); color: var(--fg-muted); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
@@ -1042,7 +1057,7 @@
       <div class="reveal">
         <div class="eyebrow">01b — Type Lab</div>
         <h2 class="title">Geist type lab</h2>
-        <p class="lead">Just like <a href="https://vercel.com/font?type=pixel" target="_blank" rel="noopener" style="color:var(--blue)">vercel.com/font</a> — rendered in the <strong style="color:var(--fg)">real Geist Pixel</strong> typeface, with its five shape variants (Square / Circle / Grid / Triangle / Line), plus a weight &amp; spacing playground and a glyph metrics inspector.</p>
+        <p class="lead">Just like <a href="https://vercel.com/font?type=pixel" target="_blank" rel="noopener" style="color:var(--blue)">vercel.com/font</a> — rendered in the <strong style="color:var(--fg)">real Geist Pixel</strong> typeface, with its five shape variants (Square / Circle / Grid / Triangle / Line), plus a shape &amp; spacing playground, a glyph metrics inspector, and a live explorer for all 7 OpenType stylistic sets.</p>
       </div>
 
       <div class="tl-card wide reveal" style="margin-top: 40px;">
@@ -1089,6 +1104,16 @@
             <button class="shape-btn">@</button>
           </div>
         </div>
+      </div>
+
+      <!-- STYLISTIC SETS EXPLORER -->
+      <div class="tl-card wide reveal" style="margin-top: 16px;">
+        <h3>Stylistic sets</h3>
+        <div class="sub">7 OpenType sets · toggle alternate glyphs live via font-feature-settings</div>
+        <div class="ssx-preview"><span id="ssxPreview">Ramble Glass I/O 2050</span></div>
+        <div class="ssx-grid" id="ssxGrid"></div>
+        <input class="input" id="ssxInput" value="Ramble Glass I/O 2050" maxlength="28" style="margin-top:16px;" />
+        <div class="tl-css" id="ssxCss"></div>
       </div>
     </div>
   </section>
@@ -2422,6 +2447,58 @@ GGGGGGGG`;
       }));
       [size, space].forEach(s => s.addEventListener('input', upd));
       upd();
+    })();
+
+    /* ============================================================
+       STYLISTIC SETS EXPLORER — toggle ss01–ss09 via feature settings
+    ============================================================ */
+    (function stylisticSets() {
+      const preview = document.getElementById('ssxPreview');
+      const input = document.getElementById('ssxInput');
+      const grid = document.getElementById('ssxGrid');
+      const cssOut = document.getElementById('ssxCss');
+      if (!preview || !grid || !input) return;
+      const DEFAULT = 'Ramble Glass I/O 2050';
+      const SETS = [
+        { tag: 'ss01', name: 'No tail a',   ch: 'a' },
+        { tag: 'ss02', name: 'Alt a',       ch: 'a' },
+        { tag: 'ss03', name: 'Alt l',       ch: 'l' },
+        { tag: 'ss04', name: 'Alt R',       ch: 'R' },
+        { tag: 'ss05', name: 'Alt I',       ch: 'I' },
+        { tag: 'ss06', name: 'Alt G',       ch: 'G' },
+        { tag: 'ss09', name: 'Alt numbers', ch: '0' },
+      ];
+      const active = new Set();
+      function apply() {
+        const on = SETS.filter(s => active.has(s.tag));
+        const val = on.length ? on.map(s => '"' + s.tag + '" 1').join(', ') : 'normal';
+        preview.style.fontFeatureSettings = val;
+        preview.textContent = input.value || DEFAULT;
+        cssOut.textContent = 'font-feature-settings: ' + val + ';';
+      }
+      SETS.forEach(s => {
+        const chip = document.createElement('button');
+        chip.className = 'ssx-chip'; chip.type = 'button';
+        const demo = document.createElement('span'); demo.className = 'demo';
+        const def = document.createElement('span'); def.className = 'def'; def.textContent = s.ch;
+        const arw = document.createElement('span'); arw.className = 'arw'; arw.textContent = '→';
+        const alt = document.createElement('span'); alt.className = 'alt'; alt.textContent = s.ch;
+        alt.style.fontFeatureSettings = '"' + s.tag + '" 1';
+        demo.append(def, arw, alt);
+        const meta = document.createElement('span'); meta.className = 'meta';
+        const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = s.tag;
+        const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = s.name;
+        meta.append(tag, nm);
+        chip.append(demo, meta);
+        chip.addEventListener('click', () => {
+          if (active.has(s.tag)) active.delete(s.tag); else active.add(s.tag);
+          chip.classList.toggle('on');
+          apply();
+        });
+        grid.appendChild(chip);
+      });
+      input.addEventListener('input', apply);
+      apply();
     })();
 
     /* ============================================================
