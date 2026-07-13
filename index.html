@@ -52,8 +52,8 @@
       --cyan:   #22d3ee;
 
       --radius: 4px;
-      --font-sans: "Geist", ui-sans-serif, "Segoe UI", system-ui, sans-serif;
-      --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+      --font-sans: "Geist Pixel Square", "Geist", ui-sans-serif, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace; /* kept for ASCII-art / code alignment (Geist Pixel is not monospaced) */
       --font-display: "Geist Pixel Square", "Geist", ui-sans-serif, sans-serif;
       --font-pixel: "Geist Pixel Square", "Geist", sans-serif;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -741,17 +741,17 @@
   <!-- STATS -->
   <div class="wrap">
     <div class="stats reveal">
-      <div class="stat"><div class="num" data-count="9">0</div><div class="lbl">Weights</div></div>
-      <div class="stat"><div class="num" data-count="8">0</div><div class="lbl">Accent colors</div></div>
-      <div class="stat"><div class="num" data-count="20">0</div><div class="lbl">Effects</div></div>
-      <div class="stat"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl">Vanilla JS</div></div>
+      <div class="stat"><div class="num" data-count="5">0</div><div class="lbl">Variants</div></div>
+      <div class="stat"><div class="num" data-count="480">0</div><div class="lbl">Glyphs</div></div>
+      <div class="stat"><div class="num" data-count="7">0</div><div class="lbl">Stylistic sets</div></div>
+      <div class="stat"><div class="num" data-count="32">0</div><div class="lbl">Languages</div></div>
     </div>
   </div>
 
   <!-- MARQUEE -->
   <div class="marquee" style="margin-top: 60px;">
     <div class="marquee-track" id="marquee">
-      <span>Geist Sans</span><span>◆</span><span>Geist Mono</span><span>◆</span><span>Color Tokens</span><span>◆</span><span>Buttons</span><span>◆</span><span>Inputs</span><span>◆</span><span>Tabs</span><span>◆</span><span>Toasts</span><span>◆</span><span>Tooltips</span><span>◆</span><span>Badges</span><span>◆</span><span>Motion</span><span>◆</span>
+      <span>Geist Pixel</span><span>◆</span><span>Square</span><span>●</span><span>Circle</span><span>▦</span><span>Grid</span><span>▲</span><span>Triangle</span><span>▬</span><span>Line</span><span>◆</span><span>5 Variants</span><span>◆</span><span>OFL</span><span>◆</span><span>Self-hosted</span><span>◆</span><span>Motion</span><span>◆</span>
     </div>
   </div>
 
@@ -1008,28 +1008,27 @@
     <div class="wrap">
       <div class="reveal">
         <div class="eyebrow">01 — Typeface</div>
-        <h2 class="title">Geist type stack</h2>
-        <p class="lead">Two typefaces driving the look: Geist Sans for display and body, Geist Mono for code. Vercel's official Geist family, self-hosted.</p>
+        <h2 class="title">Geist Pixel</h2>
+        <p class="lead">One open-source display face, five shape variants — Square, Circle, Grid, Triangle and Line. Vercel's Geist Pixel, self-hosted, under the OFL.</p>
       </div>
 
       <div class="grid cols-2" style="margin-top: 40px;">
         <div class="card reveal">
-          <div class="type-row"><span class="sample" style="font-family: var(--font-display); font-size: 26px; font-weight: 700;">GEIST</span><span class="meta">Geist · Display</span></div>
-          <div class="type-row"><span class="sample" style="font-size: 26px; font-weight: 600;">The quick brown fox</span><span class="meta">Geist · 600</span></div>
-          <div class="type-row"><span class="sample" style="font-size: 18px; font-weight: 400; color: var(--fg-muted);">Readable at body sizes too.</span><span class="meta">Geist · 400</span></div>
-          <div class="weights">
-            <span style="font-weight:400;">Aa</span><span style="font-weight:500;">Aa</span><span style="font-weight:600;">Aa</span><span style="font-weight:700;">Aa</span>
-            <span style="font-family: var(--font-display); font-size: 20px; align-self: center; margin-left: 8px; font-weight: 700;">A</span>
-          </div>
+          <div class="type-row"><span class="sample" style="font-family: 'Geist Pixel Square', monospace; font-size: 26px;">Square</span><span class="meta">■ Square</span></div>
+          <div class="type-row"><span class="sample" style="font-family: 'Geist Pixel Circle', monospace; font-size: 26px;">Circle</span><span class="meta">● Circle</span></div>
+          <div class="type-row"><span class="sample" style="font-family: 'Geist Pixel Grid', monospace; font-size: 26px;">Grid</span><span class="meta">▦ Grid</span></div>
+          <div class="type-row"><span class="sample" style="font-family: 'Geist Pixel Triangle', monospace; font-size: 26px;">Triangle</span><span class="meta">▲ Triangle</span></div>
+          <div class="type-row"><span class="sample" style="font-family: 'Geist Pixel Line', monospace; font-size: 26px;">Line</span><span class="meta">▬ Line</span></div>
         </div>
         <div class="card reveal">
-          <div class="type-row"><span class="sample" style="font-family: var(--font-mono); font-size: 44px;">Geist Mono</span><span class="meta">Mono</span></div>
+          <div class="type-row"><span class="sample" style="font-family: 'Geist Pixel Square', monospace; font-size: 40px;">Geist</span><span class="meta">Pixel</span></div>
           <div class="code" style="margin-top: 8px;">
-<span class="k">const</span> <span class="f">geist</span> = {<br />
-&nbsp;&nbsp;display: <span class="s">"Geist"</span>,<br />
-&nbsp;&nbsp;body: <span class="s">"Geist"</span>,<br />
-&nbsp;&nbsp;mono: <span class="s">"Geist Mono"</span>,<br />
-&nbsp;&nbsp;<span class="c">// by Vercel, self-hosted</span><br />
+<span class="k">const</span> <span class="f">geistPixel</span> = {<br />
+&nbsp;&nbsp;variants: <span class="s">5</span>,<br />
+&nbsp;&nbsp;glyphs: <span class="s">480</span>,<br />
+&nbsp;&nbsp;stylisticSets: <span class="s">7</span>,<br />
+&nbsp;&nbsp;languages: <span class="s">32</span>,<br />
+&nbsp;&nbsp;<span class="c">// Vercel · OFL · self-hosted</span><br />
 };
           </div>
         </div>
@@ -1063,15 +1062,16 @@
       <div class="tl-grid">
         <div class="tl-card reveal">
           <h3>Font playground</h3>
-          <div class="sub">real-time weight, size &amp; spacing</div>
+          <div class="sub">real-time shape, size &amp; spacing</div>
           <div class="tl-preview"><span id="fpPreview">Geist</span></div>
-          <div class="tl-row"><label>Size</label><input type="range" id="fpSize" min="18" max="90" value="52" /><span class="val" id="fpSizeV">52</span></div>
-          <div class="tl-row"><label>Weight</label><input type="range" id="fpWeight" min="400" max="700" step="100" value="600" /><span class="val" id="fpWeightV">600</span></div>
-          <div class="tl-row"><label>Spacing</label><input type="range" id="fpSpace" min="-4" max="16" value="0" /><span class="val" id="fpSpaceV">0</span></div>
+          <div class="tl-row"><label>Size</label><input type="range" id="fpSize" min="18" max="96" value="56" /><span class="val" id="fpSizeV">56</span></div>
+          <div class="tl-row"><label>Spacing</label><input type="range" id="fpSpace" min="-4" max="16" value="1" /><span class="val" id="fpSpaceV">1</span></div>
           <div class="shape-btns" id="fpFamily">
-            <button class="shape-btn active" data-f='"Geist", sans-serif' data-w="1">Geist Sans</button>
-            <button class="shape-btn" data-f='"Geist Mono", monospace' data-w="1">Geist Mono</button>
-            <button class="shape-btn" data-f='"Geist Pixel Square", monospace' data-w="0">Geist Pixel</button>
+            <button class="shape-btn active" data-f='"Geist Pixel Square", monospace'>Square</button>
+            <button class="shape-btn" data-f='"Geist Pixel Circle", monospace'>Circle</button>
+            <button class="shape-btn" data-f='"Geist Pixel Grid", monospace'>Grid</button>
+            <button class="shape-btn" data-f='"Geist Pixel Triangle", monospace'>Triangle</button>
+            <button class="shape-btn" data-f='"Geist Pixel Line", monospace'>Line</button>
           </div>
           <div class="tl-css" id="fpCss"></div>
         </div>
@@ -2404,24 +2404,23 @@ GGGGGGGG`;
     ============================================================ */
     (function playground() {
       const prev = document.getElementById('fpPreview');
-      const size = document.getElementById('fpSize'), weight = document.getElementById('fpWeight'), space = document.getElementById('fpSpace');
-      const sV = document.getElementById('fpSizeV'), wV = document.getElementById('fpWeightV'), spV = document.getElementById('fpSpaceV');
+      const size = document.getElementById('fpSize'), space = document.getElementById('fpSpace');
+      const sV = document.getElementById('fpSizeV'), spV = document.getElementById('fpSpaceV');
       const css = document.getElementById('fpCss');
       const famBtns = [...document.querySelectorAll('#fpFamily .shape-btn')];
-      let family = '"Geist", sans-serif', useWeight = true;
+      let family = '"Geist Pixel Square", monospace';
       function upd() {
         prev.style.fontFamily = family;
         prev.style.fontSize = size.value + 'px';
-        prev.style.fontWeight = useWeight ? weight.value : '400';
         prev.style.letterSpacing = space.value + 'px';
-        sV.textContent = size.value; wV.textContent = useWeight ? weight.value : '—'; spV.textContent = space.value;
-        css.textContent = 'font-family: ' + family.split(',')[0] + ';\nfont-size: ' + size.value + 'px;\n' + (useWeight ? 'font-weight: ' + weight.value + ';\n' : '') + 'letter-spacing: ' + space.value + 'px;';
+        sV.textContent = size.value; spV.textContent = space.value;
+        css.textContent = 'font-family: ' + family.split(',')[0] + ';\nfont-size: ' + size.value + 'px;\nletter-spacing: ' + space.value + 'px;';
       }
       famBtns.forEach(b => b.addEventListener('click', () => {
         famBtns.forEach(x => x.classList.remove('active')); b.classList.add('active');
-        family = b.dataset.f; useWeight = b.dataset.w === '1'; weight.disabled = !useWeight; upd();
+        family = b.dataset.f; upd();
       }));
-      [size, weight, space].forEach(s => s.addEventListener('input', upd));
+      [size, space].forEach(s => s.addEventListener('input', upd));
       upd();
     })();
 
@@ -2441,27 +2440,35 @@ GGGGGGGG`;
         const muted = 'rgba(0,112,243,0.55)';
         ctx.clearRect(0, 0, W, H);
         const px = H * 0.6, baseY = H * 0.72;
-        ctx.font = '700 ' + px + 'px "Geist", sans-serif';
+        const FAM = '"Geist Pixel Square", monospace';
+        ctx.font = px + 'px ' + FAM;
         ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
-        const m = ctx.measureText(ch);
-        const xh = ctx.measureText('x').actualBoundingBoxAscent;
+        // font metrics from reference glyphs — stable, independent of the shown glyph
+        const xh  = ctx.measureText('x').actualBoundingBoxAscent;
         const cap = ctx.measureText('H').actualBoundingBoxAscent;
-        const asc = m.actualBoundingBoxAscent, desc = m.actualBoundingBoxDescent;
-        // guide lines
-        function line(y, label) {
-          ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
-          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.setLineDash([]);
-          ctx.fillStyle = muted; ctx.font = '13px "Geist Mono", monospace'; ctx.textAlign = 'left';
-          ctx.fillText(label, 8, y - 5);
+        const asc = ctx.measureText('h').actualBoundingBoxAscent;
+        const desc = ctx.measureText('g').actualBoundingBoxDescent;
+        // glyph first, so the guides sit on top of it
+        ctx.fillStyle = fg; ctx.fillText(ch, W / 2, baseY);
+        // guide metrics
+        const guides = [
+          { y: baseY,       label: 'baseline' },
+          { y: baseY - xh,  label: 'x-height' },
+          { y: baseY - cap, label: 'cap-height' },
+          { y: baseY - asc, label: 'ascender' },
+        ];
+        if (desc > 2) guides.push({ y: baseY + desc, label: 'descender' });
+        // dashed guide lines at their true positions
+        ctx.strokeStyle = muted; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
+        guides.forEach(g => { ctx.beginPath(); ctx.moveTo(0, g.y); ctx.lineTo(W, g.y); ctx.stroke(); });
+        ctx.setLineDash([]);
+        // labels, nudged apart so near-coincident lines never overlap
+        ctx.fillStyle = muted; ctx.font = '12px ui-monospace, "Geist Mono", monospace'; ctx.textAlign = 'left';
+        const rows = guides.map(g => ({ label: g.label, ty: g.y - 4 })).sort((a, b) => a.ty - b.ty);
+        for (let i = 1; i < rows.length; i++) {
+          if (rows[i].ty - rows[i - 1].ty < 15) rows[i].ty = rows[i - 1].ty + 15;
         }
-        line(baseY, 'baseline');
-        line(baseY - xh, 'x-height');
-        line(baseY - cap, 'cap-height');
-        line(baseY - asc, 'ascender');
-        if (desc > 2) line(baseY + desc, 'descender');
-        // glyph
-        ctx.fillStyle = fg; ctx.font = '700 ' + px + 'px "Geist", sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(ch, W / 2, baseY);
+        rows.forEach(r => ctx.fillText(r.label, 8, r.ty));
       }
       btns.forEach(b => b.addEventListener('click', () => {
         btns.forEach(x => x.classList.remove('active')); b.classList.add('active');
