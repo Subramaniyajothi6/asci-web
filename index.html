@@ -675,6 +675,101 @@
     .code .k { color: var(--purple); } .code .s { color: var(--green); } .code .c { color: var(--fg-faint); } .code .f { color: var(--blue); }
 
     /* ============================================================
+       KBD / HERO HINT
+    ============================================================ */
+    kbd { font-family: var(--font-mono); font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--panel); border: 1px solid var(--border-2); border-bottom-width: 2px; color: var(--fg-muted); }
+    .hero-hint { margin-top: 18px; font-size: 13px; color: var(--fg-faint); }
+    .hero-hint button { all: unset; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: inherit; }
+    .hero-hint button:hover { color: var(--fg-muted); }
+
+    /* ============================================================
+       NAV SEARCH / PALETTE TRIGGER
+    ============================================================ */
+    .nav-search { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: var(--fg-faint); font-size: 13px; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit; }
+    .nav-search:hover { border-color: var(--border-2); color: var(--fg-muted); }
+    .nav-search svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .nav-search kbd { padding: 1px 5px; font-size: 10px; }
+    @media (max-width: 780px) { .nav-search .nav-search-label { display: none; } }
+
+    /* ============================================================
+       COMMAND PALETTE
+    ============================================================ */
+    #palette { position: fixed; inset: 0; z-index: 300; display: flex; align-items: flex-start; justify-content: center; padding: 12vh 20px 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    :root[data-theme="light"] #palette { background: rgba(0,0,0,0.25); }
+    #palette.open { opacity: 1; pointer-events: auto; }
+    .palette-box { width: min(560px, 100%); max-height: 64vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border-2); border-radius: 12px; box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6); overflow: hidden; transform: translateY(-10px) scale(0.98); transition: transform 0.25s var(--ease); }
+    #palette.open .palette-box { transform: none; }
+    .palette-input-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .palette-input-row svg { width: 16px; height: 16px; color: var(--fg-faint); flex-shrink: 0; }
+    .palette-input-row input { flex: 1; min-width: 0; background: none; border: none; outline: none; color: var(--fg); font-family: inherit; font-size: 15px; }
+    .palette-input-row input::placeholder { color: var(--fg-faint); }
+    .palette-results { overflow-y: auto; padding: 8px; }
+    .palette-empty { padding: 30px 16px; text-align: center; color: var(--fg-faint); font-size: 14px; }
+    .palette-group { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-faint); padding: 12px 10px 6px; }
+    .palette-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; cursor: pointer; }
+    .palette-item .pico { width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center; background: var(--panel-2); border: 1px solid var(--border); flex-shrink: 0; color: var(--fg-muted); }
+    .palette-item .pico svg { width: 15px; height: 15px; }
+    .palette-item .ptext { flex: 1; min-width: 0; }
+    .palette-item .ptitle { font-size: 14px; color: var(--fg); }
+    .palette-item .pdesc { font-size: 12px; color: var(--fg-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .palette-item .parrow { color: var(--fg-faint); font-family: var(--font-mono); font-size: 12px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
+    .palette-item.active { background: var(--panel-2); }
+    .palette-item.active .parrow { opacity: 1; }
+
+    /* ============================================================
+       THEME ENGINE
+    ============================================================ */
+    .theme-engine { margin-top: 40px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 26px; }
+    .te-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+    .te-preset { display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 8px; border-radius: 999px; border: 1px solid var(--border-2); background: var(--panel-2); color: var(--fg-muted); font-size: 13px; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: inherit; }
+    .te-preset:hover, .te-preset.active { color: var(--fg); border-color: var(--fg-faint); }
+    .te-preset .sw { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+    .te-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .te-row label { width: 92px; flex-shrink: 0; font-family: var(--font-mono); font-size: 14px; color: var(--fg-muted); }
+    .te-row .val { width: 50px; text-align: right; font-family: var(--font-mono); font-size: 14px; color: var(--fg); }
+    .te-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 18px 0; }
+    .te-chip { border-radius: 8px; padding: 12px 10px; text-align: center; transition: transform 0.2s var(--ease); }
+    .te-chip:hover { transform: translateY(-2px); }
+    .te-chip .nm { display: block; font-size: 11px; color: rgba(255,255,255,0.85); font-family: var(--font-mono); margin-bottom: 2px; }
+    .te-chip .hx { display: block; font-size: 11px; color: rgba(255,255,255,0.65); font-family: var(--font-mono); }
+    @media (max-width: 640px) { .te-swatches { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ============================================================
+       FAQ ACCORDION
+    ============================================================ */
+    .faq-list { margin-top: 36px; max-width: 720px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 2px; background: none; border: none; color: var(--fg); font-family: var(--font-sans); font-size: 16px; text-align: left; cursor: pointer; }
+    .faq-q:hover { color: var(--blue); }
+    .faq-q .qico { flex-shrink: 0; width: 22px; height: 22px; display: grid; place-items: center; color: var(--fg-faint); transition: transform 0.3s var(--ease); }
+    .faq-item.open .faq-q .qico { transform: rotate(45deg); color: var(--blue); }
+    .faq-a-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s var(--ease); }
+    .faq-item.open .faq-a-wrap { grid-template-rows: 1fr; }
+    .faq-a-inner { overflow: hidden; }
+    .faq-a-inner p { color: var(--fg-muted); font-size: 14px; line-height: 1.75; padding: 0 2px 22px; }
+
+    /* ============================================================
+       TIMELINE / BUILD LOG
+    ============================================================ */
+    .timeline { position: relative; margin-top: 44px; max-width: 720px; }
+    .timeline::before { content: ""; position: absolute; left: 15px; top: 6px; bottom: 6px; width: 1px; background: var(--border-2); }
+    .tl-item { position: relative; padding: 0 0 34px 46px; cursor: pointer; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { position: absolute; left: 8px; top: 4px; width: 15px; height: 15px; border-radius: 50%; background: var(--panel); border: 2px solid var(--border-2); transition: border-color 0.25s, background 0.25s, box-shadow 0.25s; }
+    .tl-item:hover .tl-dot, .tl-item.open .tl-dot { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0,112,243,0.15); }
+    .tl-item.open .tl-dot { background: var(--blue); }
+    .tl-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .tl-ver { font-family: var(--font-display); font-size: 12px; color: var(--blue); background: rgba(0,112,243,0.1); border: 1px solid rgba(0,112,243,0.3); padding: 2px 8px; border-radius: 999px; }
+    .tl-date { font-family: var(--font-mono); font-size: 13px; color: var(--fg-faint); }
+    .tl-title { font-size: 15px; color: var(--fg); font-weight: 500; }
+    .tl-desc { color: var(--fg-muted); font-size: 14px; line-height: 1.6; max-width: 560px; }
+    .tl-extra { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s var(--ease); }
+    .tl-item.open .tl-extra { grid-template-rows: 1fr; }
+    .tl-extra-inner { overflow: hidden; }
+    .tl-hash { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-faint); background: var(--bg-soft); border: 1px solid var(--border); border-radius: 6px; padding: 4px 9px; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+    .tl-hash:hover { border-color: var(--fg-faint); color: var(--fg-muted); }
+
+    /* ============================================================
        TOAST
     ============================================================ */
     #toasts { position: fixed; bottom: 24px; right: 24px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
@@ -719,6 +814,18 @@
   <div id="vignette"></div>
   <div id="konami-invaders"></div>
 
+  <!-- COMMAND PALETTE -->
+  <div id="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="palette-box">
+      <div class="palette-input-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="paletteInput" placeholder="Search sections, run a command…" autocomplete="off" spellcheck="false" />
+        <kbd>ESC</kbd>
+      </div>
+      <div class="palette-results" id="paletteResults"></div>
+    </div>
+  </div>
+
   <!-- NAV -->
   <nav>
     <div class="nav-inner">
@@ -732,6 +839,11 @@
         <a href="#game">Game</a>
         <a href="#lab">Lab</a>
         <a href="#components">UI</a>
+        <a href="#theme">Theme</a>
+        <button class="nav-search" id="paletteBtn" aria-label="Open command palette">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="nav-search-label">Search</span><kbd>⌘K</kbd>
+        </button>
         <button class="theme-toggle" id="soundBtn" aria-label="Toggle sound" style="margin-right:6px;">🔇</button>
         <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme"></button>
       </div>
@@ -753,6 +865,7 @@
         </a>
         <button class="btn btn-secondary btn-lg" id="toastBtn">Trigger a toast</button>
       </div>
+      <p class="hero-hint"><button id="heroHintBtn">Or press <kbd>⌘</kbd><kbd>K</kbd> to search everything on this page</button></p>
     </div>
   </header>
 
@@ -769,7 +882,7 @@
   <!-- MARQUEE -->
   <div class="marquee" style="margin-top: 60px;">
     <div class="marquee-track" id="marquee">
-      <span>Geist Pixel</span><span>◆</span><span>Square</span><span>●</span><span>Circle</span><span>▦</span><span>Grid</span><span>▲</span><span>Triangle</span><span>▬</span><span>Line</span><span>◆</span><span>5 Variants</span><span>◆</span><span>OFL</span><span>◆</span><span>Self-hosted</span><span>◆</span><span>Motion</span><span>◆</span>
+      <span>Geist Pixel</span><span>◆</span><span>Square</span><span>●</span><span>Circle</span><span>▦</span><span>Grid</span><span>▲</span><span>Triangle</span><span>▬</span><span>Line</span><span>◆</span><span>5 Variants</span><span>◆</span><span>OFL</span><span>◆</span><span>Self-hosted</span><span>◆</span><span>Motion</span><span>◆</span><span>Theme Engine</span><span>◆</span><span>⌘K Search</span><span>◆</span><span>Build Log</span><span>◆</span>
     </div>
   </div>
 
@@ -1139,6 +1252,30 @@
     </div>
   </section>
 
+  <!-- THEME ENGINE -->
+  <section id="theme">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="eyebrow">02b — Theme Engine</div>
+        <h2 class="title">Retheme it, live</h2>
+        <p class="lead">Blue, purple, pink, teal and cyan are wired to CSS custom properties, not hard-coded hexes — drag the hue wheel and every button glow, link, gradient and progress bar on this page repaints at once. Status colors (green amber red) stay fixed on purpose, since they carry meaning.</p>
+      </div>
+
+      <div class="theme-engine reveal">
+        <div class="te-presets" id="tePresets"></div>
+
+        <div class="te-row"><label>Hue</label><input type="range" id="teHue" min="0" max="360" value="212" /><span class="val" id="teHueV">212°</span></div>
+        <div class="te-row"><label>Saturation</label><input type="range" id="teSat" min="35" max="100" value="88" /><span class="val" id="teSatV">88%</span></div>
+
+        <div class="te-swatches" id="teSwatches"></div>
+
+        <div class="tl-css" id="teCss"></div>
+
+        <button class="btn btn-secondary btn-sm" id="teReset" style="margin-top:4px;">Reset to Geist defaults</button>
+      </div>
+    </div>
+  </section>
+
   <!-- BUTTONS -->
   <section id="buttons">
     <div class="wrap">
@@ -1301,6 +1438,125 @@
 <span class="k">npx</span> create-next-app@latest <span class="c">--tailwind</span><br />
 <span class="k">npm</span> install geist
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="eyebrow">06 — FAQ</div>
+        <h2 class="title">Questions, answered</h2>
+        <p class="lead">The stuff people actually ask when they land here. Click one open.</p>
+      </div>
+
+      <div class="faq-list reveal" id="faqList">
+        <div class="faq-item open">
+          <button class="faq-q"><span>Is this an official Vercel site?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>No — this is an independent, single-file playground for exploring <code>Geist</code>, Vercel's open-source design system, and <code>Geist Pixel</code>, its pixel display typeface. It links out to the real <code>vercel.com/geist</code> and <code>vercel.com/font</code>, but everything you're clicking on this page is unofficial.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>What is Geist Pixel, exactly?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>A display typeface Vercel ships alongside Geist Sans and Geist Mono. It comes in five shape variants — Square, Circle, Grid, Triangle and Line — each drawing the same glyph grid with a different "pixel" shape. All five are live in the Type Lab above, along with a glyph inspector and all 7 OpenType stylistic sets.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Why does the whole page use a pixel font, not just a demo card?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>Because it's more informative to stress-test a typeface at its extremes than to tuck it into one card. <code>--font-sans</code> here points at Geist Pixel Square first, with real Geist Sans as the fallback — so body copy, buttons and labels all render in the display face instead of a normal one.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Is there a framework or build step behind this?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>No — <code>index.html</code> is one file: inline <code>&lt;style&gt;</code>, inline <code>&lt;script&gt;</code>, no bundler, no <code>npm install</code>. The fonts are self-hosted <code>.woff2</code> files in <code>/fonts</code>. Open it directly in a browser and it runs.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Does the site track me or send data anywhere?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>No network requests fire from your interactions. Your Snake high score, sound toggle and Theme Engine hue live in <code>localStorage</code> on your own machine — nothing leaves the browser.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Can I use Geist Pixel in my own project?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>Yes — it ships under the SIL Open Font License, the same license text sitting in <code>/fonts/LICENSE.txt</code> in this repo. Grab it from <code>vercel.com/font</code> or the Geist repository on GitHub.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Can I copy this page?</span><span class="qico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>Go for it — it's a demo, not a product. View source and lift what's useful: the donut/plasma/fire renderers, the dithering, the sprite engine, the stylistic-set explorer, this palette. Swap in your own tokens.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILD LOG -->
+  <section id="changelog">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="eyebrow">07 — Build log</div>
+        <h2 class="title">How this page got here</h2>
+        <p class="lead">A real changelog pulled straight from this repo's own git history — oldest first. Click an entry for the commit hash.</p>
+      </div>
+
+      <div class="timeline reveal" id="timeline">
+        <div class="tl-item" data-hash="2bc34ed">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v1.0</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Add Geist design system playground and docs site</div>
+          <p class="tl-desc">The original build: Geist tokens, buttons, forms, components and a companion docs.html, all in one file.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit 2bc34ed — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="dd9e635">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v1.1</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Replace pixel Google Fonts with self-hosted official Geist typefaces</div>
+          <p class="tl-desc">Swapped a placeholder pixel font for the real, official Vercel typefaces — self-hosted, no external font requests.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit dd9e635 — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="b56f6b2">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v1.2</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Use the real Geist Pixel typeface in the pixel renderer</div>
+          <p class="tl-desc">The Type Lab's pixel renderer switched from a hand-rolled approximation to the actual Geist Pixel glyphs.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit b56f6b2 — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="dae6d6d">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v2.0</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Make the whole site a Geist Pixel showcase with animated character field</div>
+          <p class="tl-desc">The site's whole identity shifted around Geist Pixel — including the animated glyph field behind the hero headline.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit dae6d6d — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="60a51fd">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v2.1</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Fix glyph inspector, go Geist Pixel only, show verified font spec</div>
+          <p class="tl-desc">Dropped fallback fonts in favor of Geist Pixel exclusively, and started surfacing verified spec numbers instead of guesses.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit 60a51fd — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="c696d8e">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v2.2</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Add interactive stylistic-set explorer</div>
+          <p class="tl-desc">All 7 OpenType stylistic sets became toggleable live, via <code>font-feature-settings</code>, with alternate-glyph previews.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit c696d8e — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="ad9c8cd">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v2.3</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Fix glyph-inspector label stacking and ASCII sub-pixel wave</div>
+          <p class="tl-desc">Cleanup pass: overlapping baseline/x-height/cap-height labels in the glyph inspector, plus a smoother ripple.js wave.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit ad9c8cd — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="cce1145">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v2.4</span><span class="tl-date">Jul 13, 2026</span></div>
+          <div class="tl-title">Align glyph guides by pixel-scan; brighten Mode tabs</div>
+          <p class="tl-desc">The glyph inspector's guide lines now align by scanning actual rendered pixels instead of font metrics alone.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">commit cce1145 — click to copy</span></div></div>
+        </div>
+        <div class="tl-item" data-hash="HEAD">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span class="tl-ver">v3.0</span><span class="tl-date">Jul 20, 2026</span></div>
+          <div class="tl-title">Command palette, live Theme Engine, FAQ and this build log</div>
+          <p class="tl-desc">The page you're looking at right now — a ⌘K search over every section, a hue/saturation engine that reflows the accent tokens live, and two new content sections.</p>
+          <div class="tl-extra"><div class="tl-extra-inner"><span class="tl-hash" title="Copy full reference">working tree — click to copy</span></div></div>
         </div>
       </div>
     </div>
@@ -2911,6 +3167,271 @@ oRRRRo..
         i = (i + 1) % shapes.length;
         h1.style.fontFamily = '"Geist Pixel ' + shapes[i] + '", "Geist", sans-serif';
       }, 1500);
+    })();
+
+    /* ============================================================
+       THEME ENGINE — live-retheme the accent tokens
+    ============================================================ */
+    (function themeEngine() {
+      const hueEl = document.getElementById('teHue');
+      const satEl = document.getElementById('teSat');
+      const hueV = document.getElementById('teHueV');
+      const satV = document.getElementById('teSatV');
+      const swWrap = document.getElementById('teSwatches');
+      const cssOut = document.getElementById('teCss');
+      const presetWrap = document.getElementById('tePresets');
+      const resetBtn = document.getElementById('teReset');
+      if (!hueEl) return;
+
+      const TOKENS = [
+        { name: '--blue',   label: 'blue',   dh: 0,   l: 55 },
+        { name: '--purple', label: 'purple', dh: 48,  l: 65 },
+        { name: '--pink',   label: 'pink',   dh: 92,  l: 58 },
+        { name: '--teal',   label: 'teal',   dh: 152, l: 40 },
+        { name: '--cyan',   label: 'cyan',   dh: 180, l: 62 }
+      ];
+      const PRESETS = [
+        { name: 'Vercel Blue', h: 212, s: 88 },
+        { name: 'Sunset',      h: 22,  s: 88 },
+        { name: 'Mint',        h: 158, s: 62 },
+        { name: 'Grape',       h: 265, s: 62 },
+        { name: 'Ruby',        h: 348, s: 78 }
+      ];
+      const DEFAULT = { h: 212, s: 88 };
+
+      function hslToHex(h, s, l) {
+        s /= 100; l /= 100;
+        const k = n => (n + h / 30) % 12;
+        const a = s * Math.min(l, 1 - l);
+        const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+        const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+        return '#' + toHex(f(0)) + toHex(f(8)) + toHex(f(4));
+      }
+
+      function markActivePreset(h, s) {
+        [...presetWrap.children].forEach(b => b.classList.toggle('active', +b.dataset.h === h && +b.dataset.s === s));
+      }
+
+      function refreshDisplay() {
+        swWrap.innerHTML = '';
+        const lines = [];
+        TOKENS.forEach(t => {
+          const hex = getComputedStyle(root).getPropertyValue(t.name).trim() || '#000000';
+          lines.push(t.name + ': ' + hex + ';');
+          const c = document.createElement('div');
+          c.className = 'te-chip'; c.style.background = hex; c.style.cursor = 'pointer';
+          c.innerHTML = '<span class="nm">' + t.label + '</span><span class="hx">' + hex + '</span>';
+          c.title = 'Click to copy ' + hex;
+          c.addEventListener('click', () => { copyText(hex); toast(hex + ' copied'); });
+          swWrap.appendChild(c);
+        });
+        cssOut.innerHTML = lines.join('<br />');
+      }
+
+      function write(h, s) {
+        TOKENS.forEach(t => root.style.setProperty(t.name, hslToHex((h + t.dh) % 360, s, t.l)));
+        hueV.textContent = h + '°'; satV.textContent = s + '%';
+        refreshDisplay();
+        markActivePreset(h, s);
+        try { localStorage.setItem('themeHue', h); localStorage.setItem('themeSat', s); } catch (e) {}
+      }
+
+      PRESETS.forEach(p => {
+        const b = document.createElement('button');
+        b.className = 'te-preset'; b.type = 'button';
+        b.dataset.h = p.h; b.dataset.s = p.s;
+        b.innerHTML = '<span class="sw" style="background:' + hslToHex(p.h, p.s, 55) + '"></span>' + p.name;
+        b.addEventListener('click', () => { hueEl.value = p.h; satEl.value = p.s; write(p.h, p.s); Sound.click(); });
+        presetWrap.appendChild(b);
+      });
+
+      hueEl.addEventListener('input', () => write(+hueEl.value, +satEl.value));
+      satEl.addEventListener('input', () => write(+hueEl.value, +satEl.value));
+
+      resetBtn.addEventListener('click', () => {
+        TOKENS.forEach(t => root.style.removeProperty(t.name));
+        try { localStorage.removeItem('themeHue'); localStorage.removeItem('themeSat'); } catch (e) {}
+        hueEl.value = DEFAULT.h; satEl.value = DEFAULT.s;
+        hueV.textContent = DEFAULT.h + '°'; satV.textContent = DEFAULT.s + '%';
+        refreshDisplay();
+        markActivePreset(DEFAULT.h, DEFAULT.s);
+        toast('Theme reset to Geist defaults');
+      });
+
+      let startH = DEFAULT.h, startS = DEFAULT.s, hadSaved = false;
+      try {
+        const sh = +localStorage.getItem('themeHue'), ss = +localStorage.getItem('themeSat');
+        if (sh) { startH = sh; hadSaved = true; }
+        if (ss) { startS = ss; hadSaved = true; }
+      } catch (e) {}
+      hueEl.value = startH; satEl.value = startS;
+      hueV.textContent = startH + '°'; satV.textContent = startS + '%';
+      if (hadSaved) write(startH, startS); else { refreshDisplay(); markActivePreset(startH, startS); }
+    })();
+
+    /* ============================================================
+       FAQ ACCORDION
+    ============================================================ */
+    document.querySelectorAll('#faqList .faq-item').forEach(item => {
+      const q = item.querySelector('.faq-q');
+      q.addEventListener('click', () => {
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('#faqList .faq-item.open').forEach(o => o.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+        Sound.click();
+      });
+    });
+
+    /* ============================================================
+       BUILD LOG TIMELINE
+    ============================================================ */
+    document.querySelectorAll('#timeline .tl-item').forEach(item => {
+      item.addEventListener('click', () => { item.classList.toggle('open'); Sound.click(); });
+      const hashEl = item.querySelector('.tl-hash');
+      if (hashEl) {
+        hashEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const h = item.dataset.hash;
+          copyText(h);
+          toast('Copied: ' + h);
+        });
+      }
+    });
+
+    /* ============================================================
+       COMMAND PALETTE (⌘K)
+    ============================================================ */
+    (function commandPalette() {
+      const overlay = document.getElementById('palette');
+      const input = document.getElementById('paletteInput');
+      const results = document.getElementById('paletteResults');
+      const openBtn = document.getElementById('paletteBtn');
+      const heroBtn = document.getElementById('heroHintBtn');
+      if (!overlay) return;
+
+      const ICO_SECTION = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>';
+      const ICO_ACTION  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>';
+      const ICO_LINK    = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>';
+
+      function buildSectionCommands() {
+        const items = [{
+          group: 'Jump to section', icon: ICO_SECTION, title: 'Hero', desc: 'Back to the top of the page',
+          keywords: 'top hero home start',
+          action: () => { location.hash = 'top'; document.getElementById('top').scrollIntoView({ behavior: 'smooth' }); }
+        }];
+        document.querySelectorAll('section[id]').forEach(sec => {
+          const eyebrow = sec.querySelector('.eyebrow');
+          const title = sec.querySelector('h2.title');
+          const lead = sec.querySelector('.lead');
+          const name = title ? title.textContent.trim() : sec.id;
+          const desc = (eyebrow ? eyebrow.textContent.trim() + ' — ' : '') + (lead ? lead.textContent.trim() : '');
+          items.push({
+            group: 'Jump to section', icon: ICO_SECTION, title: name, desc: desc, keywords: sec.id + ' ' + name,
+            action: () => { location.hash = sec.id; sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+          });
+        });
+        return items;
+      }
+
+      function buildActionCommands() {
+        return [
+          { group: 'Actions', icon: ICO_ACTION, title: 'Toggle theme', desc: root.getAttribute('data-theme') === 'dark' ? 'Switch to light' : 'Switch to dark', keywords: 'theme dark light mode', action: () => themeBtn.click() },
+          { group: 'Actions', icon: ICO_ACTION, title: Sound.isOn ? 'Mute sound effects' : 'Unmute sound effects', desc: '8-bit click / coin / hit beeps', keywords: 'sound mute audio beep', action: () => soundBtn.click() },
+          { group: 'Actions', icon: ICO_ACTION, title: 'Trigger a toast', desc: 'Fires the demo notification', keywords: 'toast notification alert', action: () => document.getElementById('toastBtn').click() },
+          { group: 'Actions', icon: ICO_ACTION, title: 'Scroll to top', desc: 'Back to the hero', keywords: 'top scroll home', action: () => totop.click() },
+          { group: 'Actions', icon: ICO_ACTION, title: 'Copy a random accent color', desc: 'Grabs a hex from the palette below', keywords: 'color copy hex random accent swatch', action: () => { const sw = [...document.querySelectorAll('.swatch')]; const s = sw[Math.floor(Math.random() * sw.length)]; if (s) s.click(); } },
+          { group: 'Actions', icon: ICO_ACTION, title: 'Reset Theme Engine to defaults', desc: 'Restores the original Geist blue / purple / pink / teal / cyan', keywords: 'theme reset default hue', action: () => { const b = document.getElementById('teReset'); if (b) b.click(); } },
+          { group: 'Actions', icon: ICO_ACTION, title: 'Toggle party mode', desc: 'The Konami-code effect, without the code', keywords: 'party konami invaders rainbow hue', action: () => { root.classList.toggle('party'); Sound.coin(); toast('🎉 party mode toggled'); } },
+          { group: 'Links', icon: ICO_LINK, title: 'Open the docs', desc: 'docs.html — the written companion', keywords: 'docs documentation learn', action: () => { location.href = 'docs.html'; } },
+          { group: 'Links', icon: ICO_LINK, title: 'vercel.com/geist', desc: 'The real, official Geist site', keywords: 'vercel official geist site', action: () => window.open('https://vercel.com/geist/introduction', '_blank', 'noopener') },
+          { group: 'Links', icon: ICO_LINK, title: 'vercel.com/font', desc: 'Official Geist Pixel type page', keywords: 'vercel font pixel official', action: () => window.open('https://vercel.com/font?type=pixel', '_blank', 'noopener') }
+        ];
+      }
+
+      let COMMANDS = [], filtered = [], active = 0;
+
+      function render(list) {
+        results.innerHTML = '';
+        if (!list.length) { results.innerHTML = '<div class="palette-empty">No matches. Try a different word.</div>'; return; }
+        let lastGroup = null;
+        list.forEach((cmd, i) => {
+          if (cmd.group !== lastGroup) {
+            const g = document.createElement('div');
+            g.className = 'palette-group'; g.textContent = cmd.group;
+            results.appendChild(g);
+            lastGroup = cmd.group;
+          }
+          const el = document.createElement('div');
+          el.className = 'palette-item' + (i === active ? ' active' : '');
+          el.dataset.i = i;
+          const pico = document.createElement('div'); pico.className = 'pico'; pico.innerHTML = cmd.icon;
+          const ptitle = document.createElement('div'); ptitle.className = 'ptitle'; ptitle.textContent = cmd.title;
+          const pdesc = document.createElement('div'); pdesc.className = 'pdesc'; pdesc.textContent = cmd.desc;
+          const ptext = document.createElement('div'); ptext.className = 'ptext';
+          ptext.appendChild(ptitle); ptext.appendChild(pdesc);
+          const parrow = document.createElement('div'); parrow.className = 'parrow'; parrow.textContent = '↵';
+          el.appendChild(pico); el.appendChild(ptext); el.appendChild(parrow);
+          el.addEventListener('mouseenter', () => { active = i; updateActive(); });
+          el.addEventListener('click', () => run(cmd));
+          results.appendChild(el);
+        });
+      }
+
+      function updateActive() {
+        [...results.querySelectorAll('.palette-item')].forEach(el => el.classList.toggle('active', +el.dataset.i === active));
+        const activeEl = results.querySelector('.palette-item.active');
+        if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+      }
+
+      function filter(q) {
+        q = q.trim().toLowerCase();
+        if (!q) { filtered = COMMANDS; active = 0; render(filtered); return; }
+        filtered = COMMANDS
+          .map(cmd => {
+            const t = cmd.title.toLowerCase();
+            const hay = (t + ' ' + cmd.desc + ' ' + (cmd.keywords || '')).toLowerCase();
+            let score = -1;
+            if (hay.includes(q)) score = t.startsWith(q) ? 2 : (t.includes(q) ? 1 : 0);
+            return { cmd, score };
+          })
+          .filter(x => x.score >= 0)
+          .sort((a, b) => b.score - a.score)
+          .map(x => x.cmd);
+        active = 0;
+        render(filtered);
+      }
+
+      function run(cmd) {
+        close();
+        Sound.click();
+        setTimeout(() => cmd.action(), 60);
+      }
+
+      function open() {
+        COMMANDS = [...buildSectionCommands(), ...buildActionCommands()];
+        filtered = COMMANDS; active = 0;
+        overlay.classList.add('open');
+        input.value = '';
+        render(filtered);
+        setTimeout(() => input.focus(), 50);
+      }
+      function close() { overlay.classList.remove('open'); }
+
+      input.addEventListener('input', () => filter(input.value));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, filtered.length - 1); updateActive(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); updateActive(); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (filtered[active]) run(filtered[active]); }
+        else if (e.key === 'Escape') { close(); }
+      });
+      overlay.addEventListener('mousedown', (e) => { if (e.target === overlay) close(); });
+      if (openBtn) openBtn.addEventListener('click', () => { Sound.click(); open(); });
+      if (heroBtn) heroBtn.addEventListener('click', () => { Sound.click(); open(); });
+      window.addEventListener('keydown', (e) => {
+        const mod = e.metaKey || e.ctrlKey;
+        if (mod && e.key.toLowerCase() === 'k') { e.preventDefault(); overlay.classList.contains('open') ? close() : open(); }
+        else if (e.key === '/' && !overlay.classList.contains('open') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); open(); }
+      });
     })();
   </script>
 </body>
