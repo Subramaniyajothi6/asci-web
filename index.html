@@ -451,6 +451,8 @@
     .conv-wrap { display: grid; grid-template-columns: 300px 1fr; gap: 16px; margin-top: 40px; }
     @media (max-width: 820px) { .conv-wrap { grid-template-columns: 1fr; } }
     .conv-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 18px; }
+    /* the 300px side panel is too narrow to fit 4 mode labels at the shared tab padding — tighten just here */
+    #convMode .tab { padding: 8px 6px; }
     .conv-drop { border: 2px dashed var(--border-2); border-radius: 6px; padding: 22px; text-align: center; color: var(--fg-muted); font-size: 14px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
     .conv-drop:hover, .conv-drop.drag { border-color: var(--blue); background: rgba(0,112,243,0.06); }
     .conv-label { font-size: 13px; color: var(--fg-muted); margin: 16px 0 8px; display: block; }

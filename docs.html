@@ -138,10 +138,12 @@
 
     /* icons */
     .icongrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px;margin:18px 0;}
-    .icell{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 6px;border:1px solid var(--border);border-radius:6px;background:var(--panel);color:var(--fg);transition:border-color .2s,color .2s;}
+    .icell{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 6px;border:1px solid var(--border);border-radius:6px;background:var(--panel);color:var(--fg);transition:border-color .2s,color .2s;cursor:pointer;position:relative;}
     .icell:hover{border-color:var(--blue);color:var(--blue);}
     .icell svg{width:22px;height:22px;}
     .icell span{font-family:var(--font-mono);font-size:13px;color:var(--fg-faint);}
+    .icell.copied{border-color:var(--green);color:var(--green);}
+    .icell.copied span{color:var(--green);}
 
     /* tokens */
     .tok{display:flex;align-items:center;gap:12px;margin:9px 0;font-family:var(--font-mono);font-size:15px;color:var(--fg-muted);}
@@ -149,6 +151,18 @@
     .tok .name{width:120px;flex-shrink:0;color:var(--fg);}
     .radii{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0;}
     .radii .r{width:70px;height:70px;background:var(--panel-2);border:1px solid var(--border-2);display:grid;place-items:end center;padding-bottom:6px;font-family:var(--font-mono);font-size:12px;color:var(--fg-faint);}
+
+    /* live type scale */
+    .tscale{margin:16px 0;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+    .ts-row{display:flex;align-items:baseline;gap:18px;padding:12px 16px;border-bottom:1px solid var(--border);}
+    .ts-row:last-child{border-bottom:none;}
+    .ts-meta{width:104px;flex-shrink:0;font-family:var(--font-mono);font-size:13px;color:var(--fg-faint);}
+    .ts-sample{font-family:var(--font-sans);color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+    /* feature tour chips */
+    .tourrow{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px;}
+    .tourchip{font-family:var(--font-mono);font-size:14px;padding:7px 14px;border-radius:99px;border:1px solid var(--border-2);background:var(--panel);color:var(--fg-muted);cursor:pointer;transition:border-color .2s,color .2s;}
+    .tourchip:hover{color:var(--blue);border-color:var(--blue);text-decoration:none;}
 
     /* component gallery */
     .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:18px 0;}
@@ -253,6 +267,15 @@
         <div class="kicker">Documentation</div>
         <h1>Learn how it all works</h1>
         <p class="lead">Three short courses in one place: <strong>how the playground's effects are built</strong>, <strong>how Vercel works</strong>, and <strong>the Geist design system</strong>. Plain language, live demos, copyable code.</p>
+        <p style="margin-top:18px;font-size:14px;color:var(--fg-faint);">New to Geist? Jump straight to a feature — each one is live, not just a screenshot:</p>
+        <div class="tourrow">
+          <a class="tourchip" href="#fonts">Aa Fonts</a>
+          <a class="tourchip" href="#geistpixel">▦ Pixel renderer</a>
+          <a class="tourchip" href="#colors">● Color tokens</a>
+          <a class="tourchip" href="#tokens">▭ Design tokens</a>
+          <a class="tourchip" href="#icons">✦ Icons</a>
+          <a class="tourchip" href="#components">▤ Components</a>
+        </div>
       </div>
 
       <!-- INTRO -->
@@ -723,19 +746,22 @@ button { background: <span class="k">var</span>(<span class="f">--blue</span>); 
           <div class="r" style="border-radius:999px">full</div>
         </div>
         <h3>Type scale</h3>
-        <div class="tok"><span class="name">12 · label</span></div>
-        <div class="tok"><span class="name">14 · small</span></div>
-        <div class="tok"><span class="name">16 · body</span></div>
-        <div class="tok"><span class="name">20 · h3</span></div>
-        <div class="tok"><span class="name">28 · h2</span></div>
-        <div class="tok"><span class="name">40 · display</span></div>
+        <p>Not just numbers — this is what each step actually looks like, rendered live in Geist:</p>
+        <div class="tscale">
+          <div class="ts-row"><span class="ts-meta">12 · label</span><span class="ts-sample" style="font-size:12px;">The quick brown fox</span></div>
+          <div class="ts-row"><span class="ts-meta">14 · small</span><span class="ts-sample" style="font-size:14px;">The quick brown fox</span></div>
+          <div class="ts-row"><span class="ts-meta">16 · body</span><span class="ts-sample" style="font-size:16px;">The quick brown fox</span></div>
+          <div class="ts-row"><span class="ts-meta">20 · h3</span><span class="ts-sample" style="font-size:20px;font-weight:600;">The quick brown fox</span></div>
+          <div class="ts-row"><span class="ts-meta">28 · h2</span><span class="ts-sample" style="font-size:28px;font-weight:600;">The quick brown fox</span></div>
+          <div class="ts-row"><span class="ts-meta">40 · display</span><span class="ts-sample" style="font-size:40px;font-family:var(--font-display);">The quick fox</span></div>
+        </div>
         <div class="note tip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>Pick from the scale, don't invent sizes. Consistent spacing is what makes an interface feel "designed."</span></div>
       </section>
 
       <section id="icons">
         <h2>Icons</h2>
-        <p>Geist ships a large icon library — clean, single-weight, stroke-based icons that match the type. Here's a representative set (each 24×24, 2px stroke):</p>
-        <div class="icongrid">
+        <p>Geist ships a large icon library — clean, single-weight, stroke-based icons that match the type. Here's a representative set (each 24×24, 2px stroke). <strong>Click any icon</strong> to copy its import line:</p>
+        <div class="icongrid" id="icongrid">
           <div class="icell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>arrow</span></div>
           <div class="icell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>check</span></div>
           <div class="icell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg><span>plus</span></div>
@@ -884,6 +910,20 @@ button { background: <span class="k">var</span>(<span class="f">--blue</span>); 
     (function(){const prev=document.getElementById('fontSample'),sz=document.getElementById('fSize'),wt=document.getElementById('fWeight'),szv=document.getElementById('fSizeV'),wtv=document.getElementById('fWeightV');
       function u(){prev.style.fontFamily='"Geist",sans-serif';prev.style.fontSize=sz.value+'px';prev.style.fontWeight=wt.value;szv.textContent=sz.value;wtv.textContent=wt.value;}
       [sz,wt].forEach(x=>x.addEventListener('input',u));u();})();
+
+    // icon grid — click to copy an import line
+    (function(){const grid=document.getElementById('icongrid');if(!grid)return;
+      grid.querySelectorAll('.icell').forEach(cell=>{
+        const name=cell.querySelector('span').textContent.trim();
+        const pascal=name.charAt(0).toUpperCase()+name.slice(1);
+        const line="import { "+pascal+" } from 'geist-icons';";
+        cell.addEventListener('click',()=>{
+          navigator.clipboard&&navigator.clipboard.writeText(line);
+          cell.classList.add('copied');
+          const span=cell.querySelector('span');const orig=span.textContent;span.textContent='copied!';
+          setTimeout(()=>{cell.classList.remove('copied');span.textContent=orig;},900);
+        });
+      });})();
 
     // swatches
     (function(){const wrap=document.getElementById('swatches');const cols=[['Blue','#0070f3'],['Purple','#8a63d2'],['Pink','#ff0080'],['Red','#e5484d'],['Amber','#f5a623'],['Green','#45a557'],['Teal','#14b8a6'],['Cyan','#22d3ee']];
